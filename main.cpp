@@ -16,7 +16,7 @@ class Farmer {
     vector<farmer> farmers;
     public:
         void addfarmer() {
-            cout << "Enter the number of farmers to add: ";
+            cout << "Enter farmer details:" << endl;
             farmer f;
 
             cin.ignore();
@@ -41,7 +41,8 @@ class Farmer {
                 f.village.empty()) {
                 cout << "Error: All fields must be filled and age must be greater than 0." << endl;
                 return;
-            } else {
+            }else {
+                farmers.push_back(f);
                 cout << "Farmer added successfully !" << endl;
             }
         }
@@ -51,6 +52,19 @@ class Farmer {
             cout << "---------------Search a Farmer----------------" << endl;
             cout << "Enter the farmer's id: ";
             cin >> id;
+
+            for (farmer current: farmers){
+                if (current.ID == id) {
+                    cout << "Farmer found!" << endl;
+                    cout << "Name: " << current.name << endl;
+                    cout << "Age: " << current.age << endl;
+                    cout << "Address: " << current.addressof << endl;
+                    cout << "Phone: " << current.phone << endl;
+                    cout << "Village: " << current.village << endl;
+                    return;
+                }
+            }
+            cout << "Farmer with ID" << id << " not found." << endl;
         }
 
         void modifyFarmer() {
