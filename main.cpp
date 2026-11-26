@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -24,8 +23,60 @@ struct BuyerData {
 };
 
 struct lotData {
-
+    int lotID;
+    int farmerID;
+    int productID;
+    int quantity;
+    string status;
 };
+
+bool isBlank(const string& str){
+    if(str.empty()){
+        cout << "Error: Field cannot be empty. \n";
+        return true;
+    }
+    return false;
+}
+
+bool isValidGrade(char grade){
+    if(grade != 'A' && grade != 'B' && grade != 'C'){
+        cout << "Error: Invalid grade. Must be A, B, or C.\n";
+        return false;
+    }
+    return true;
+}
+
+bool isValidUnit(const string& unit){
+    if(unit != "kg" && unit != "lb" && unit != "g"){
+        cout << "Error: Invalid unit. Must be kg, lb, or g.\n";
+        return false;
+    }
+    return true;
+}
+
+bool isValidPrice(double price){
+    if(price <= 0){
+        cout << "Error: Price must be greater than 0.\n";
+        return false;
+    }
+    return true;
+}
+
+bool isValidDate(const string& date){
+    if(date.length() != 10 || date[4] != '-' || date[7] != '-'){
+        cout << "Error: Invalid date format. Use YYYY-MM-DD.\n";
+        return false;
+    }
+    return true;
+}
+
+bool isValidAge(int age){
+    if(age <= 0){
+        cout << "Error: Age must be greater than 0.\n";
+        return false;
+    }
+    return true;
+}
 
 class Farmer {
     vector<FarmerData> farmers;
@@ -37,28 +88,37 @@ public:
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         cout << "Enter farmer details:\n";
-        cout << "Name: ";
-        getline(cin, f.name);
 
-        cout << "Age: ";
-        cin >> f.age;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        do {
+            cout << "Name: ";
+            getline(cin, f.name);
+        } while (isBlank(f.name));
 
-        cout << "Address: ";
-        getline(cin, f.addressof);
+        do {
+            cout << "Age: ";
+            cin >> f.age;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } while (!isValidAge(f.age));
 
-        cout << "Phone: ";
-        getline(cin, f.phone);
+        do {
+            cout << "Address: ";
+            getline(cin, f.addressof);
+        } while (isBlank(f.addressof));
 
-        cout << "Village: ";
-        getline(cin, f.village);
+        do {
+            cout << "Phone: ";
+            getline(cin, f.phone);
+        } while (isBlank(f.phone));
+
+        do {
+            cout << "Village: ";
+            getline(cin, f.village);
+        } while (isBlank(f.village));
 
         cout << "ID: ";
         cin >> f.ID;
 
-        if (f.ID <= 0 || f.name.empty() || f.age <= 0 ||
-            f.addressof.empty() || f.phone.empty() ||
-            f.village.empty()) {
+        if (f.ID <= 0 || f.age <= 0) {
             cout << "Error: Invalid or empty fields.\n";
             return;
         }
@@ -96,21 +156,31 @@ public:
             if (current.ID == searchID) {
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-                cout << "New name: ";
-                getline(cin, current.name);
+                do {
+                    cout << "New name: ";
+                    getline(cin, current.name);
+                } while (isBlank(current.name));
 
                 cout << "New age: ";
-                cin >> current.age;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                do {
+                    cin >> current.age;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                } while (!isValidAge(current.age));
+                
+                do {
+                    cout << "New phone: ";
+                    getline(cin, current.phone);
+                } while (isBlank(current.phone));
 
-                cout << "New phone: ";
-                getline(cin, current.phone);
+                do {
+                    cout << "New address: ";
+                    getline(cin, current.addressof);
+                } while (isBlank(current.addressof));
 
-                cout << "New address: ";
-                getline(cin, current.addressof);
-
-                cout << "New village: ";
-                getline(cin, current.village);
+                do {
+                    cout << "New village: ";
+                    getline(cin, current.village);
+                } while (isBlank(current.village));
 
                 cout << "Farmer details updated!\n";
                 return;
@@ -152,6 +222,15 @@ public:
         return false;
     }
 
+    bool validateFarmerReference(int farmerID) {
+        for (const FarmerData& current : farmers) {
+            if (current.ID == farmerID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     
 };
 
@@ -165,28 +244,37 @@ public:
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         cout << "Enter buyer details:\n";
-        cout << "Name: ";
-        getline(cin, b.name);
 
-        cout << "Age: ";
-        cin >> b.age;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        do {
+            cout << "Name: ";
+            getline(cin, b.name);
+        } while (isBlank(b.name));
 
-        cout << "Address: ";
-        getline(cin, b.addressof);
+        do {
+            cout << "Age: ";
+            cin >> b.age;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } while (!isValidAge(b.age));
 
-        cout << "Phone: ";
-        getline(cin, b.phone);
+        do {
+            cout << "Address: ";
+            getline(cin, b.addressof);
+        } while (isBlank(b.addressof));
 
-        cout << "Buyer type: ";
-        getline(cin, b.buyertype);
+        do {
+            cout << "Phone: ";
+            getline(cin, b.phone);
+        } while (isBlank(b.phone));
+
+        do {
+            cout << "Buyer type: ";
+            getline(cin, b.buyertype);
+        } while (isBlank(b.buyertype));
 
         cout << "ID: ";
         cin >> b.ID;
 
-        if (b.ID <= 0 || b.name.empty() || b.age <= 0 ||
-            b.addressof.empty() || b.phone.empty() ||
-            b.buyertype.empty()) {
+        if (b.ID <= 0 || b.age <= 0) {
             cout << "Error: Invalid or empty fields.\n";
             return;
         }
@@ -224,21 +312,31 @@ public:
             if (current.ID == searchID) {
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-                cout << "New name: ";
-                getline(cin, current.name);
+                do {
+                    cout << "New name: ";
+                    getline(cin, current.name);
+                } while (isBlank(current.name));
 
-                cout << "New age: ";
-                cin >> current.age;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                do {
+                    cout << "New age: ";
+                    cin >> current.age;
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                } while (!isValidAge(current.age));
 
-                cout << "New phone: ";
-                getline(cin, current.phone);
+                do {
+                    cout << "New phone: ";
+                    getline(cin, current.phone);
+                } while (isBlank(current.phone));
 
-                cout << "New address: ";
-                getline(cin, current.addressof);
+                do {
+                    cout << "New address: ";
+                    getline(cin, current.addressof);
+                } while (isBlank(current.addressof));
 
-                cout << "New buyer type: ";
-                getline(cin, current.buyertype);
+                do {
+                    cout << "New buyer type: ";
+                    getline(cin, current.buyertype);
+                } while (isBlank(current.buyertype));
 
                 cout << "Buyer details updated!\n";
                 return;
@@ -284,6 +382,7 @@ public:
 
 struct productData{
     int productID;
+    int farmerID;
     string productname;
     char grade;
     double price;
@@ -295,41 +394,105 @@ class ProductManager {
     vector<productData> products;
 
 public:
-    void addproduct() {
+
+    // TC07 and TC08 - Validate farmer reference
+    bool validateFarmerReference(Farmer& f, int farmerID)
+    {
+        return f.validateFarmerReference(farmerID);
+    }
+
+    // TC22 - Validate quantity boundary
+    bool validateQuantity(int quantity)
+    {
+        if(quantity >= 1 && quantity <= 1000)
+        {
+            return true;
+        }
+
+        cout << "Error: Quantity must be between 1 and 1000.\n";
+        return false;
+    }
+
+    // Add product
+    void addproduct(Farmer& f)
+    {
         cout << "Enter product details:" << endl;
         productData p;
 
         cout << "Product ID: ";
         cin >> p.productID;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        cout << "Product Name: ";
-        getline(cin, p.productname);
-        cout << "Grade: ";
-        cin >> p.grade;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Farmer ID: ";
+        cin >> p.farmerID;
 
-        cout << "Price: ";
-        cin >> p.price;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-        cout << "Harvest Date: ";
-        getline(cin, p.harvestdate);
-        cout << "Quantity: ";
-        cin >> p.quantity;
-
-        if (p.productID <= 0 || p.productname.empty() || p.grade == '\0' ||
-            p.price <= 0 || p.harvestdate.empty() || p.quantity <= 0) {
-            cout << "Error: All fields must be filled and values must be greater than 0." << endl;
+        // TC07 and TC08
+        if(!validateFarmerReference(f, p.farmerID))
+        {
+            cout << "Error: Farmer ID does not exist. Product rejected.\n";
             return;
         }
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        do
+        {
+            cout << "Product Name: ";
+            getline(cin, p.productname);
+        } while(isBlank(p.productname));
+
+        do
+        {
+            cout << "Grade: ";
+            cin >> p.grade;
+        } while(!isValidGrade(p.grade));
+
+        do
+        {
+            cout << "Price: ";
+            cin >> p.price;
+        } while(!isValidPrice(p.price));
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        do
+        {
+            cout << "Harvest Date: ";
+            getline(cin, p.harvestdate);
+        } while(isBlank(p.harvestdate) || !isValidDate(p.harvestdate));
+
+        do
+        {
+            cout << "Quantity: ";
+            cin >> p.quantity;
+        } while(!validateQuantity(p.quantity));
+
+        // TC22
+        if(p.productID <= 0)
+        {
+            cout << "Error: Invalid product details.\n";
+            return;
+        }
+
+        products.push_back(p);
+
+        cout << "Product added successfully!\n";
     }
 
+    // Display product
     void displayproduct()
     {
-        cout<<"-----------------Display Product Details------------------\n";
-        for (const productData& current : products) {
+        cout << "-----------------Display Product Details------------------\n";
+
+        if(products.empty())
+        {
+            cout << "No products available.\n";
+            return;
+        }
+
+        for(const productData& current : products)
+        {
             cout << "Product ID : " << current.productID << endl;
+            cout << "Farmer ID : " << current.farmerID << endl;
             cout << "Product Name : " << current.productname << endl;
             cout << "Product Grade : " << current.grade << endl;
             cout << "Product Price : " << current.price << endl;
@@ -339,36 +502,134 @@ public:
         }
     }
 
+    // Modify product
     void modifyproduct()
     {
-    int modifyID ;
-    cout<<"Enter the product ID which should be modified :";
-    cin>>modifyID ;
-    for( int i=0 ; i<=products.size() ; i++)
-    {
-        if( products[i].productID == modifyID )
+        int modifyID;
+
+        cout << "Enter the product ID which should be modified : ";
+        cin >> modifyID;
+
+        for(int i = 0; i < products.size(); i++)
         {
-            cout<<"Product found !"<<endl ;
-            cout<<"Enter new product details:"<<endl ;
-            cout<<"Product Name : ";
-            cin.ignore();
-            getline(cin, products[i].productname);
-            cout<<"Product Grade : ";
-            cin >> products[i].grade;
-            cout<<"Product Price : ";
-            cin >> products[i].price;
-            cout<<"Product Harvest Date : ";
-            cin.ignore();
-            getline(cin, products[i].harvestdate);
-            cout<<"Product Quantity : ";
-            cin >> products[i].quantity;
+            if(products[i].productID == modifyID)
+            {
+                cout << "Product found !\n";
+                cout << "Enter new product details:\n";
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                do
+                {
+                    cout << "Product Name : ";
+                    getline(cin, products[i].productname);
+                } while(isBlank(products[i].productname));
+
+                do
+                {
+                    cout << "Product Grade : ";
+                    cin >> products[i].grade;
+                } while(!isValidGrade(products[i].grade));
+
+                do
+                {
+                    cout << "Product Price : ";
+                    cin >> products[i].price;
+                } while(!isValidPrice(products[i].price));
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                do
+                {
+                    cout << "Product Harvest Date : ";
+                    getline(cin, products[i].harvestdate);
+                } while(isBlank(products[i].harvestdate) || !isValidDate(products[i].harvestdate));
+
+                do
+                {
+                    cout << "Product Quantity : ";
+                    cin >> products[i].quantity;
+                } while(!validateQuantity(products[i].quantity));
+
+                cout << "Product updated successfully!\n";
+                return;
+            }
         }
+
+        cout << "Product not found.\n";
     }
+
+    // TC20 - Sort product by selected field
+    void sortproduct()
+    {
+        int choice;
+
+        cout << "\n1. Sort by Product Name\n";
+        cout << "2. Sort by Price\n";
+        cout << "3. Sort by Quantity\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        if(choice < 1 || choice > 3)
+        {
+            cout << "Invalid sorting choice.\n";
+            return;
+        }
+
+        if(products.size() < 2)
+        {
+            cout << "Not enough products to sort.\n";
+            return;
+        }
+
+        for(int i = 0; i < products.size() - 1; i++)
+        {
+            for(int j = 0; j < products.size() - i - 1; j++)
+            {
+                bool swapNeeded = false;
+
+                if(choice == 1 &&
+                   products[j].productname > products[j+1].productname)
+                {
+                    swapNeeded = true;
+                }
+
+                else if(choice == 2 &&
+                        products[j].price > products[j+1].price)
+                {
+                    swapNeeded = true;
+                }
+
+                else if(choice == 3 &&
+                        products[j].quantity > products[j+1].quantity)
+                {
+                    swapNeeded = true;
+                }
+
+                if(swapNeeded)
+                {
+                    swap(products[j], products[j+1]);
+                }
+            }
+        }
+
+        cout << "Products sorted successfully!\n";
+        displayproduct();
     }
 };
 
 class lot{
     vector<lotData> lots;
+
+    public:
+    void addLot(){
+
+    }
+
+    void displayLot(){
+
+    }
+
 };
 
 void farmerMenu(Farmer& f) {
@@ -447,7 +708,7 @@ void buyerMenu(Buyer& b) {
     } while (true);
 }
 
-void productMenu(ProductManager& p) {
+void productMenu(ProductManager& p, Farmer& f) {
     int option;
 
     do {
@@ -455,13 +716,14 @@ void productMenu(ProductManager& p) {
         cout << "1. Add a Product\n";
         cout << "2. Display Products\n";
         cout << "3. Modify a Product\n";
-        cout << "4. Main Menu\n";
+        cout << "4. Sort Products\n";
+        cout << "5. Main Menu\n";
         cout << "Enter your option: ";
         cin >> option;
 
         switch (option) {
             case 1:
-                p.addproduct();
+                p.addproduct(f);
                 break;
             case 2:
                 p.displayproduct();
@@ -470,41 +732,14 @@ void productMenu(ProductManager& p) {
                 p.modifyproduct();
                 break;
             case 4:
+                p.sortproduct();
+                break;
+            case 5:
                 return;
             default:
                 cout << "Invalid option!\n";
         }
     } while (true);
-}
-
-void isBlank(const string& str){
-    if(str.empty()){
-        cout << "Error: Field cannot be empty. \n";
-    }
-}
-
-void isValidGrade(char grade){
-    if(grade != 'A' && grade != 'B' && grade != 'C'){
-        cout << "Error: Invalid grade. Must be A, B, or C.\n";
-    }
-}
-
-void isValidUnit(const string& unit){
-    if(unit != "kg" && unit != "lb" && unit != "g"){
-        cout << "Error: Invalid unit. Must be kg, lb, or g.\n";
-    }
-}
-
-void isValidPrice(double price){
-    if(price < 0){
-        cout << "Error: Price cannot be negative.\n";
-    }
-}
-
-void isValidDate(const string& date){
-    if(date.length() != 10 || date[4] != '-' || date[7] != '-'){
-        cout << "Error: Invalid date format. Use YYYY-MM-DD.\n";
-    }
 }
 
 int main() {
@@ -531,7 +766,7 @@ int main() {
                 buyerMenu(b);
                 break;
             case 3:
-                productMenu(p);
+                productMenu(p, f);
                 break;
             case 4:
                 cout << "Exiting program...\n";
