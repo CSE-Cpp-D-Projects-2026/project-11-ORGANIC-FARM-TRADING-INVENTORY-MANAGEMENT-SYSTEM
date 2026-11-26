@@ -754,7 +754,7 @@ int main() {
         cout << "1. Farmer Management\n";
         cout << "2. Buyer Management\n";
         cout << "3. Product Management\n";
-        cout << "4. Exit\n";
+        cout << "4. exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
