@@ -23,6 +23,15 @@ struct BuyerData {
     int ID;
 };
 
+struct ProduceData {
+    string name, ID, Harvest_date, unit, certification_no;
+    double price;
+};
+
+struct lotData {
+
+};
+
 class Farmer {
     vector<FarmerData> farmers;
 
@@ -131,6 +140,24 @@ public:
             cout << "Village: " << current.village << '\n';
         }
     }
+
+    
+    bool checkFarmerDetails() {
+        int checkID;
+
+        cout << "Enter the farmer ID which should be checked: ";
+        cin >> checkID;
+
+        for (int i = 0; i < farmers.size(); i++) {
+            if (farmers[i].ID == checkID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    
 };
 
 class Buyer {
@@ -241,6 +268,71 @@ public:
             cout << "Buyer type: " << current.buyertype << '\n';
         }
     }
+
+    
+    bool checkBuyerDetails() {
+        int checkID;
+
+        cout << "Enter the buyer ID which should be checked: ";
+        cin >> checkID;
+
+        for (int i = 0; i < buyers.size(); i++) {
+            if (buyers[i].ID == checkID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+};
+
+struct productData{
+    int productID;
+    string productname;
+    char grade;
+    double price;
+    string harvestdate;
+    int quantity;
+};
+
+class ProductManager {
+    vector<productData> products;
+
+public:
+    void addproduct() {
+        cout << "Enter product details:" << endl;
+        productData p;
+
+        cout << "Product ID: ";
+        cin >> p.productID;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "Product Name: ";
+        getline(cin, p.productname);
+        cout << "Grade: ";
+        cin >> p.grade;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "Price: ";
+        cin >> p.price;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "Harvest Date: ";
+        getline(cin, p.harvestdate);
+        cout << "Quantity: ";
+        cin >> p.quantity;
+
+        if (p.productID <= 0 || p.productname.empty() || p.grade == '\0' ||
+            p.price <= 0 || p.harvestdate.empty() || p.quantity <= 0) {
+            cout << "Error: All fields must be filled and values must be greater than 0." << endl;
+            return;
+        }
+    }
+};
+
+class lot{
+    vector<lotData> lots;
 };
 
 void farmerMenu(Farmer& f) {
@@ -252,7 +344,8 @@ void farmerMenu(Farmer& f) {
         cout << "2. Search a Farmer\n";
         cout << "3. Modify a Farmer\n";
         cout << "4. Display Farmers\n";
-        cout << "5. Main Menu\n";
+        cout << "5. check farmer details\n";
+        cout << "6. Main Menu\n";
         cout << "Enter your option: ";
         cin >> option;
 
@@ -270,6 +363,9 @@ void farmerMenu(Farmer& f) {
                 f.displayFarmer();
                 break;
             case 5:
+                f.checkFarmerDetails();
+                break;
+            case 6:
                 return;
             default:
                 cout << "Invalid option!\n";
@@ -286,7 +382,8 @@ void buyerMenu(Buyer& b) {
         cout << "2. Search a Buyer\n";
         cout << "3. Modify a Buyer\n";
         cout << "4. Display Buyers\n";
-        cout << "5. Main Menu\n";
+        cout << "5. check buyer details\n";
+        cout << "6. Main Menu\n";
         cout << "Enter your option: ";
         cin >> option;
 
@@ -304,6 +401,9 @@ void buyerMenu(Buyer& b) {
                 b.displayBuyer();
                 break;
             case 5:
+                b.checkBuyerDetails();
+                break;
+            case 6:
                 return;
             default:
                 cout << "Invalid option!\n";
@@ -311,6 +411,35 @@ void buyerMenu(Buyer& b) {
     } while (true);
 }
 
+void isBlank(const string& str){
+    if(str.empty()){
+        cout << "Error: Field cannot be empty. \n";
+    }
+}
+
+void isValidGrade(char grade){
+    if(grade != 'A' && grade != 'B' && grade != 'C'){
+        cout << "Error: Invalid grade. Must be A, B, or C.\n";
+    }
+}
+
+void isValidUnit(const string& unit){
+    if(unit != "kg" && unit != "lb" && unit != "g"){
+        cout << "Error: Invalid unit. Must be kg, lb, or g.\n";
+    }
+}
+
+void isValidPrice(double price){
+    if(price < 0){
+        cout << "Error: Price cannot be negative.\n";
+    }
+}
+
+void isValidDate(const string& date){
+    if(date.length() != 10 || date[4] != '-' || date[7] != '-'){
+        cout << "Error: Invalid date format. Use YYYY-MM-DD.\n";
+    }
+}
 int main() {
     Farmer f;
     Buyer b;
