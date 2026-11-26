@@ -23,11 +23,6 @@ struct BuyerData {
     int ID;
 };
 
-struct ProduceData {
-    string name, ID, Harvest_date, unit, certification_no;
-    double price;
-};
-
 struct lotData {
 
 };
@@ -329,6 +324,47 @@ public:
             return;
         }
     }
+
+    void displayproduct()
+    {
+        cout<<"-----------------Display Product Details------------------\n";
+        for (const productData& current : products) {
+            cout << "Product ID : " << current.productID << endl;
+            cout << "Product Name : " << current.productname << endl;
+            cout << "Product Grade : " << current.grade << endl;
+            cout << "Product Price : " << current.price << endl;
+            cout << "Product Harvest Date : " << current.harvestdate << endl;
+            cout << "Product Quantity : " << current.quantity << endl;
+            cout << "---------------------------------------------------------\n";
+        }
+    }
+
+    void modifyproduct()
+    {
+    int modifyID ;
+    cout<<"Enter the product ID which should be modified :";
+    cin>>modifyID ;
+    for( int i=0 ; i<=products.size() ; i++)
+    {
+        if( products[i].productID == modifyID )
+        {
+            cout<<"Product found !"<<endl ;
+            cout<<"Enter new product details:"<<endl ;
+            cout<<"Product Name : ";
+            cin.ignore();
+            getline(cin, products[i].productname);
+            cout<<"Product Grade : ";
+            cin >> products[i].grade;
+            cout<<"Product Price : ";
+            cin >> products[i].price;
+            cout<<"Product Harvest Date : ";
+            cin.ignore();
+            getline(cin, products[i].harvestdate);
+            cout<<"Product Quantity : ";
+            cin >> products[i].quantity;
+        }
+    }
+    }
 };
 
 class lot{
@@ -411,6 +447,36 @@ void buyerMenu(Buyer& b) {
     } while (true);
 }
 
+void productMenu(ProductManager& p) {
+    int option;
+
+    do {
+        cout << "\n========== Product Management ==========\n";
+        cout << "1. Add a Product\n";
+        cout << "2. Display Products\n";
+        cout << "3. Modify a Product\n";
+        cout << "4. Main Menu\n";
+        cout << "Enter your option: ";
+        cin >> option;
+
+        switch (option) {
+            case 1:
+                p.addproduct();
+                break;
+            case 2:
+                p.displayproduct();
+                break;
+            case 3:
+                p.modifyproduct();
+                break;
+            case 4:
+                return;
+            default:
+                cout << "Invalid option!\n";
+        }
+    } while (true);
+}
+
 void isBlank(const string& str){
     if(str.empty()){
         cout << "Error: Field cannot be empty. \n";
@@ -440,16 +506,20 @@ void isValidDate(const string& date){
         cout << "Error: Invalid date format. Use YYYY-MM-DD.\n";
     }
 }
+
 int main() {
     Farmer f;
     Buyer b;
+    ProductManager p;
+    
     int choice = 0;
 
     do {
         cout << "\n======= Organic Farm Produce Trading Management System =======\n";
         cout << "1. Farmer Management\n";
         cout << "2. Buyer Management\n";
-        cout << "3. Exit\n";
+        cout << "3. Product Management\n";
+        cout << "4. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -461,6 +531,9 @@ int main() {
                 buyerMenu(b);
                 break;
             case 3:
+                productMenu(p);
+                break;
+            case 4:
                 cout << "Exiting program...\n";
                 return 0;
             default:
