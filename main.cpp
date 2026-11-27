@@ -1,7 +1,9 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <limits>
+#include <filesystem>
 using namespace std;
 
 struct FarmerData {
@@ -82,6 +84,51 @@ class Farmer {
     vector<FarmerData> farmers;
 
 public:
+    void saveToFile() {
+        ofstream file("farmers.txt");
+
+        if (!file.is_open()) {
+            cout << "ERROR: Could not open farmers.txt\n";
+            return;
+        }
+
+        for (const FarmerData& farmer : farmers) {
+            file << farmer.ID << '\n'
+                 << farmer.name << '\n'
+                 << farmer.age << '\n'
+                 << farmer.addressof << '\n'
+                 << farmer.phone << '\n'
+                 << farmer.village << '\n';
+        }
+
+        file.close();
+        cout << "Farmer data saved to: " << filesystem::absolute("farmers.txt").string() << '\n';
+    }
+
+    void loadFromFile() {
+        ifstream file("farmers.txt");
+
+        if (!file.is_open()) {
+            cout << "No existing farmers.txt found. It will be created when you add a farmer.\n";
+            return;
+        }
+
+        FarmerData farmer;
+        while (file >> farmer.ID) {
+            file.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(file, farmer.name);
+            file >> farmer.age;
+            file.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(file, farmer.addressof);
+            getline(file, farmer.phone);
+            getline(file, farmer.village);
+            farmers.push_back(farmer);
+        }
+
+        file.close();
+        cout << "Loaded " << farmers.size() << " farmer record(s) from farmers.txt\n";
+    }
+
     void addfarmer() {
         FarmerData f;
 
@@ -124,6 +171,7 @@ public:
         }
 
         farmers.push_back(f);
+        saveToFile();
         cout << "Farmer added successfully!\n";
     }
 
@@ -161,12 +209,12 @@ public:
                     getline(cin, current.name);
                 } while (isBlank(current.name));
 
-                cout << "New age: ";
                 do {
+                    cout << "New age: ";
                     cin >> current.age;
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 } while (!isValidAge(current.age));
-                
+
                 do {
                     cout << "New phone: ";
                     getline(cin, current.phone);
@@ -182,6 +230,7 @@ public:
                     getline(cin, current.village);
                 } while (isBlank(current.village));
 
+                saveToFile();
                 cout << "Farmer details updated!\n";
                 return;
             }
@@ -206,14 +255,13 @@ public:
         }
     }
 
-    
     bool checkFarmerDetails() {
         int checkID;
 
         cout << "Enter the farmer ID which should be checked: ";
         cin >> checkID;
 
-        for (int i = 0; i < farmers.size(); i++) {
+        for (size_t i = 0; i < farmers.size(); i++) {
             if (farmers[i].ID == checkID) {
                 return true;
             }
@@ -230,8 +278,6 @@ public:
         }
         return false;
     }
-
-    
 };
 
 class Buyer {
@@ -362,14 +408,13 @@ public:
         }
     }
 
-    
     bool checkBuyerDetails() {
         int checkID;
 
         cout << "Enter the buyer ID which should be checked: ";
         cin >> checkID;
 
-        for (int i = 0; i < buyers.size(); i++) {
+        for (size_t i = 0; i < buyers.size(); i++) {
             if (buyers[i].ID == checkID) {
                 return true;
             }
@@ -377,7 +422,6 @@ public:
 
         return false;
     }
-
 };
 
 struct productData{
@@ -510,7 +554,7 @@ public:
         cout << "Enter the product ID which should be modified : ";
         cin >> modifyID;
 
-        for(int i = 0; i < products.size(); i++)
+        for(size_t i = 0; i < products.size(); i++)
         {
             if(products[i].productID == modifyID)
             {
@@ -582,9 +626,9 @@ public:
             return;
         }
 
-        for(int i = 0; i < products.size() - 1; i++)
+        for(size_t i = 0; i + 1 < products.size(); i++)
         {
-            for(int j = 0; j < products.size() - i - 1; j++)
+            for(size_t j = 0; j + i + 1 < products.size(); j++)
             {
                 bool swapNeeded = false;
 
@@ -746,7 +790,9 @@ int main() {
     Farmer f;
     Buyer b;
     ProductManager p;
-    
+
+    f.loadFromFile();
+
     int choice = 0;
 
     do {
