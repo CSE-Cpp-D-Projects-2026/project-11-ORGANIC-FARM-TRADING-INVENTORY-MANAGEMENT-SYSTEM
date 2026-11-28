@@ -683,11 +683,12 @@ public:
                     cin >> products[i].quantity;
                 } while(!validateQuantity(products[i].quantity));
 
+                saveToFile();
                 cout << "Product updated successfully!\n";
                 return;
             }
         }
-        saveToFile();
+        
         cout << "Product not found.\n";
     }
 
