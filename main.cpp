@@ -32,6 +32,16 @@ struct lotData {
     string status;
 };
 
+struct productData{
+    int productID;
+    int farmerID;
+    string productname;
+    char grade;
+    double price;
+    string harvestdate;
+    int quantity;
+};
+
 bool isBlank(const string& str){
     if(str.empty()){
         cout << "Error: Field cannot be empty. \n";
@@ -284,6 +294,51 @@ class Buyer {
     vector<BuyerData> buyers;
 
 public:
+    void saveToFile() {
+        ofstream file("buyers.txt");
+
+        if (!file.is_open()) {
+            cout << "ERROR: Could not open buyers.txt\n";
+            return;
+        }
+
+        for (const BuyerData& buyer : buyers) {
+            file << buyer.ID << '\n'
+                 << buyer.name << '\n'
+                 << buyer.age << '\n'
+                 << buyer.addressof << '\n'
+                 << buyer.phone << '\n'
+                 << buyer.buyertype << '\n';
+        }
+
+        file.close();
+        cout << "Buyer data saved to: " << filesystem::absolute("buyers.txt").string() << '\n';
+    }
+
+    void loadFromFile() {
+        ifstream file("buyers.txt");
+
+        if (!file.is_open()) {
+            cout << "No existing buyers.txt found. It will be created when you add a buyer.\n";
+            return;
+        }
+
+        BuyerData buyer;
+        while (file >> buyer.ID) {
+            file.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(file, buyer.name);
+            file >> buyer.age;
+            file.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(file, buyer.addressof);
+            getline(file, buyer.phone);
+            getline(file, buyer.buyertype);
+            buyers.push_back(buyer);
+        }
+
+        file.close();
+        cout << "Loaded " << buyers.size() << " buyer record(s) from buyers.txt\n";
+    }
+
     void addbuyer() {
         BuyerData b;
 
@@ -326,6 +381,7 @@ public:
         }
 
         buyers.push_back(b);
+        saveToFile();
         cout << "Buyer added successfully!\n";
     }
 
@@ -384,6 +440,7 @@ public:
                     getline(cin, current.buyertype);
                 } while (isBlank(current.buyertype));
 
+                saveToFile();
                 cout << "Buyer details updated!\n";
                 return;
             }
@@ -424,28 +481,63 @@ public:
     }
 };
 
-struct productData{
-    int productID;
-    int farmerID;
-    string productname;
-    char grade;
-    double price;
-    string harvestdate;
-    int quantity;
-};
-
 class ProductManager {
     vector<productData> products;
 
 public:
 
-    // TC07 and TC08 - Validate farmer reference
+    void saveToFile() {
+        ofstream file("products.txt");
+
+        if (!file.is_open()) {
+            cout << "ERROR: Could not open products.txt\n";
+            return;
+        }
+
+        for (const productData& product : products) {
+            file << product.productID << '\n'
+                 << product.farmerID << '\n'
+                 << product.productname << '\n'
+                 << product.grade << '\n'
+                 << product.price << '\n'
+                 << product.harvestdate << '\n'
+                 << product.quantity << '\n';
+        }
+
+        file.close();
+        cout << "Product data saved to: " << filesystem::absolute("products.txt").string() << '\n';
+    }
+
+    void loadFromFile() {
+        ifstream file("products.txt");
+
+        if (!file.is_open()) {
+            cout << "No existing products.txt found. It will be created when you add a product.\n";
+            return;
+        }
+
+        productData product;
+        while (file >> product.productID) {
+            file >> product.farmerID;
+            file.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(file, product.productname);
+            file >> product.grade;
+            file >> product.price;
+            file.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(file, product.harvestdate);
+            file >> product.quantity;
+            products.push_back(product);
+        }
+
+        file.close();
+        cout << "Loaded " << products.size() << " product record(s) from products.txt\n";
+    }
+
     bool validateFarmerReference(Farmer& f, int farmerID)
     {
         return f.validateFarmerReference(farmerID);
     }
 
-    // TC22 - Validate quantity boundary
     bool validateQuantity(int quantity)
     {
         if(quantity >= 1 && quantity <= 1000)
@@ -457,7 +549,6 @@ public:
         return false;
     }
 
-    // Add product
     void addproduct(Farmer& f)
     {
         cout << "Enter product details:" << endl;
@@ -469,7 +560,6 @@ public:
         cout << "Farmer ID: ";
         cin >> p.farmerID;
 
-        // TC07 and TC08
         if(!validateFarmerReference(f, p.farmerID))
         {
             cout << "Error: Farmer ID does not exist. Product rejected.\n";
@@ -510,7 +600,6 @@ public:
             cin >> p.quantity;
         } while(!validateQuantity(p.quantity));
 
-        // TC22
         if(p.productID <= 0)
         {
             cout << "Error: Invalid product details.\n";
@@ -519,10 +608,10 @@ public:
 
         products.push_back(p);
 
+        saveToFile();
         cout << "Product added successfully!\n";
     }
 
-    // Display product
     void displayproduct()
     {
         cout << "-----------------Display Product Details------------------\n";
@@ -546,7 +635,6 @@ public:
         }
     }
 
-    // Modify product
     void modifyproduct()
     {
         int modifyID;
@@ -599,11 +687,10 @@ public:
                 return;
             }
         }
-
+        saveToFile();
         cout << "Product not found.\n";
     }
 
-    // TC20 - Sort product by selected field
     void sortproduct()
     {
         int choice;
@@ -656,7 +743,7 @@ public:
                 }
             }
         }
-
+        saveToFile();
         cout << "Products sorted successfully!\n";
         displayproduct();
     }
@@ -792,6 +879,8 @@ int main() {
     ProductManager p;
 
     f.loadFromFile();
+    b.loadFromFile();
+    p.loadFromFile();
 
     int choice = 0;
 
